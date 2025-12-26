@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="bn">
+<link rel="shortcut icon" href="Withdrawal.png" type="image/w-icon">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal - Online Income BD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #7c3aed;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bkash-color: #e2136e;
+            --nagad-color: #ff6200;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Hind Siliguri', sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-shadow { 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); 
+        }
+
+        .tap-effect:active { 
+            transform: scale(0.98); 
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+
+        .bkash-gradient {
+            background: linear-gradient(135deg, var(--bkash-color) 0%, #d9146e 100%);
+        }
+
+        .nagad-gradient {
+            background: linear-gradient(135deg, var(--nagad-color) 0%, #e97100 100%);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pending {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-failed {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background-color: #f9fafb;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background-color: #ffffff;
+        }
+
+        .payment-method {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-method.selected {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-method.bkash.selected {
+            border-color: var(--bkash-color);
+            background-color: rgba(225, 19, 110, 0.05);
+        }
+
+        .payment-method.nagad.selected {
+            border-color: var(--nagad-color);
+            background-color: rgba(255, 98, 0, 0.05);
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .submit-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .history-item {
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            color: #1f2937;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .toast.error {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .toast.warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyARwuMKNRPwqvaq2HnM-cW52ZVoTrDOLIQ",
+            authDomain: "walletsystem-808df.firebaseapp.com",
+            databaseURL: "https://walletsystem-808df-default-rtdb.firebaseio.com",
+            projectId: "walletsystem-808df",
+            storageBucket: "walletsystem-808df.firebasestorage.app",
+            messagingSenderId: "674874233210",
+            appId: "1:674874233210:web:8588b19e748883182246c3",
+            measurementId: "G-H7P92Y37HL"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        const { useState, useEffect } = React;
+
+        function WithdrawApp() {
+            const [view, setView] = useState("form");
+            const [amount, setAmount] = useState("");
+            const [account, setAccount] = useState("");
+            const [method, setMethod] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [userPoints, setUserPoints] = useState(0);
+            const [history, setHistory] = useState([]);
+            const [toast, setToast] = useState({ show: false, message: "", type: "" });
+            const [errors, setErrors] = useState({});
+
+            useEffect(() => {
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        db.ref('users/' + user.uid).on('value', snap => {
+                            if (snap.exists()) {
+                                setUserPoints(snap.val().points || 0);
+                            }
+                        });
+                        
+                        // হিস্ট্রি লোড করা হচ্ছে
+                        db.ref('withdraw_requests').orderByChild('userId').equalTo(user.uid).on('value', snap => {
+                            const data = [];
+                            snap.forEach(child => {
+                                data.push({ id: child.key, ...child.val() });
+                            });
+                            setHistory(data.reverse());
+                        });
+                    } else {
+                        window.location.href = 'index.html'; 
+                    }
+                });
+            }, []);
+
+            const showToast = (message, type = "success") => {
+                setToast({ show: true, message, type });
+                setTimeout(() => {
+                    setToast({ show: false, message: "", type: "" });
+                }, 3000);
+            };
+
+            const validateForm = () => {
+                const newErrors = {};
+                
+                if (!method) {
+                    newErrors.method = "পেমেন্ট মেথড সিলেক্ট করুন";
+                }
+                
+                if (!amount || parseFloat(amount) < 20) {
+                    newErrors.amount = "সর্বনিম্ন ২০ পয়েন্ট উত্তোলন করতে হবে";
+                }
+                
+                if (parseFloat(amount) > userPoints) {
+                    newErrors.amount = "আপনার ব্যালেন্স যথেষ্ট নয়";
+                }
+                
+                if (!account || account.length < 11) {
+                    newErrors.account = "সঠিক বিকাশ/নগদ নম্বর দিন";
+                }
+                
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    return;
+                }
+
+                const user = auth.currentUser;
+                setLoading(true);
+                const userRef = db.ref('users/' + user.uid);
+                
+                // ১. ব্যালেন্স থেকে পয়েন্ট কমানো
+                userRef.transaction(currentData => {
+                    if (currentData && currentData.points >= parseFloat(amount)) {
+                        currentData.points = (currentData.points || 0) - parseFloat(amount);
+                        return currentData;
+                    }
+                }).then(result => {
+                    if (result.committed) {
+                        // ২. অ্যাডমিন প্যানেলের ফরম্যাট অনুযায়ী ডাটাবেসে রিকোয়েস্ট পাঠানো
+                        db.ref('withdraw_requests').push({
+                            userId: user.uid,
+                            userName: user.displayName || 'User',
+                            userEmail: user.email,
+                            amount: parseFloat(amount),
+                            method: method === 'bkash' ? 'bKash' : 'Nagad',
+                            contact: account,
+                            status: 'pending',
+                            date: new Date().toLocaleString('bn-BD'),
+                            when: firebase.database.ServerValue.TIMESTAMP
+                        }).then(() => {
+                            setLoading(false);
+                            showToast("আপনার উত্তোলনের অনুরোধটি সফলভাবে পাঠানো হয়েছে!", "success");
+                            setAmount(""); 
+                            setAccount(""); 
+                            setMethod(null);
+                            setErrors({});
+                            setTimeout(() => setView("history"), 1500);
+                        });
+                    }
+                }).catch(err => {
+                    setLoading(false);
+                    showToast("সমস্যা হয়েছে: " + err.message, "error");
+                });
+            };
+
+            const getStatusStyle = (status) => {
+                if (status === "pending") return "status-pending";
+                if (status === "completed" || status === "Success") return "status-success";
+                return "status-failed";
+            };
+
+            const getStatusText = (status) => {
+                if (status === "pending") return "পেন্ডিং";
+                if (status === "completed" || status === "Success") return "সফল";
+                return "বাতিল";
+            };
+
+            return React.createElement("div", { className: "app-container" },
+                // Toast Notification
+                toast.show && React.createElement("div", { 
+                    className: `toast ${toast.type} show fade-in` 
+                }, 
+                    toast.type === "success" && React.createElement("i", { className: "fas fa-check-circle" }),
+                    toast.type === "error" && React.createElement("i", { className: "fas fa-exclamation-circle" }),
+                    toast.type === "warning" && React.createElement("i", { className: "fas fa-exclamation-triangle" }),
+                    toast.message
+                ),
+
+                // Header
+                React.createElement("div", { className: "p-4 flex items-center justify-between border-b bg-white sticky top-0 z-10" },
+                    React.createElement("button", { 
+                        onClick: () => window.location.href = 'index.html',
+                        className: "p-2 hover:bg-gray-100 rounded-full tap-effect transition-colors" 
+                    },
+                        React.createElement("i", { className: "fas fa-arrow-left text-gray-700" })
+                    ),
+                    React.createElement("h1", { className: "text-xl font-bold text-gray-800" }, 
+                        view === "form" ? "টাকা উত্তোলন" : "উত্তোলন হিস্ট্রি"
+                    ),
+                    React.createElement("button", { 
+                        onClick: () => setView(view === "form" ? "history" : "form"), 
+                        className: "p-2 hover:bg-gray-100 rounded-full tap-effect transition-colors" 
+                    },
+                        view === "form" ? 
+                            React.createElement("i", { className: "fas fa-history text-gray-700" }) :
+                            React.createElement("i", { className: "fas fa-plus-circle text-gray-700" })
+                    )
+                ),
+
+                // Main Content
+                view === "form" ? 
+                React.createElement("div", { className: "flex-1 overflow-y-auto hide-scrollbar pb-10" },
+                    // Points Card
+                    React.createElement("div", { className: "mx-4 mt-4 p-6 rounded-3xl gradient-bg text-white custom-shadow fade-in" },
+                        React.createElement("div", { className: "flex justify-between items-center" },
+                            React.createElement("div", null,
+                                React.createElement("p", { className: "opacity-80 text-sm" }, "আপনার মোট পয়েন্ট"),
+                                React.createElement("h2", { className: "text-4xl font-extrabold mt-1" }, userPoints.toFixed(1)),
+                                React.createElement("span", { className: "text-xs bg-white/20 px-2 py-1 rounded-md mt-2 inline-block" }, "১ পয়েন্ট = ১ টাকা")
+                            ),
+                            React.createElement("div", { className: "bg-white/10 p-3 rounded-2xl pulse" },
+                                React.createElement("i", { className: "fas fa-wallet text-3xl" })
+                            )
+                        )
+                    ),
+
+                    // Withdrawal Form
+                    React.createElement("form", { onSubmit: handleSubmit, className: "p-4 space-y-6 fade-in" },
+                        // Payment Method Selection
+                        React.createElement("div", null,
+                            React.createElement("label", { className: "block text-gray-700 font-semibold mb-3 ml-1" }, "পেমেন্ট মাধ্যম"),
+                            React.createElement("div", { className: "grid grid-cols-2 gap-4" },
+                                React.createElement("div", {
+                                    onClick: () => setMethod('bkash'),
+                                    className: `payment-method bkash p-4 rounded-2xl border-2 bg-white flex flex-col items-center ${method === 'bkash' ? 'selected' : ''}`
+                                },
+                                    React.createElement("div", { className: "w-12 h-12 rounded-full mb-2 flex items-center justify-center font-bold text-lg bkash-gradient text-white" }, 
+                                        React.createElement("i", { className: "fas fa-mobile-alt" })
+                                    ),
+                                    React.createElement("span", { className: "font-bold text-gray-700" }, "বিকাশ")
+                                ),
+                                React.createElement("div", {
+                                    onClick: () => setMethod('nagad'),
+                                    className: `payment-method nagad p-4 rounded-2xl border-2 bg-white flex flex-col items-center ${method === 'nagad' ? 'selected' : ''}`
+                                },
+                                    React.createElement("div", { className: "w-12 h-12 rounded-full mb-2 flex items-center justify-center font-bold text-lg nagad-gradient text-white" }, 
+                                        React.createElement("i", { className: "fas fa-mobile-alt" })
+                                    ),
+                                    React.createElement("span", { className: "font-bold text-gray-700" }, "নগদ")
+                                )
+                            ),
+                            errors.method && React.createElement("p", { className: "text-red-500 text-sm mt-1" }, errors.method)
+                        ),
+
+                        // Input Fields
+                        React.createElement("div", { className: "space-y-4" },
+                            React.createElement("div", null,
+                                React.createElement("input", {
+                                    type: "number", 
+                                    placeholder: "কত পয়েন্ট তুলতে চান?", 
+                                    value: amount,
+                                    onChange: (e) => setAmount(e.target.value),
+                                    className: `input-field ${errors.amount ? 'border-red-500' : ''}`
+                                }),
+                                React.createElement("p", { className: "text-xs text-gray-500 mt-2 ml-1" }, "💡 সর্বনিম্ন ২০ পয়েন্ট"),
+                                errors.amount && React.createElement("p", { className: "text-red-500 text-sm mt-1" }, errors.amount)
+                            ),
+                            React.createElement("div", null,
+                                React.createElement("input", {
+                                    type: "number", 
+                                    placeholder: "আপনার একাউন্ট নম্বর", 
+                                    value: account,
+                                    onChange: (e) => setAccount(e.target.value),
+                                    className: `input-field ${errors.account ? 'border-red-500' : ''}`
+                                }),
+                                errors.account && React.createElement("p", { className: "text-red-500 text-sm mt-1" }, errors.account)
+                            )
+                        ),
+
+                        // Submit Button
+                        React.createElement("button", {
+                            type: "submit",
+                            disabled: loading,
+                            className: `submit-button w-full py-4 rounded-2xl text-white font-bold text-xl tap-effect flex items-center justify-center ${loading ? 'opacity-70' : ''}`
+                        }, 
+                            loading ? 
+                                React.createElement("div", { className: "flex items-center gap-2" },
+                                    React.createElement("div", { className: "loader" }),
+                                    "প্রসেসিং..."
+                                ) : 
+                                "রিকোয়েস্ট পাঠান"
+                        )
+                    )
+                ) : 
+                // Withdrawal History
+                React.createElement("div", { className: "flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar" },
+                    history.length === 0 ? 
+                        React.createElement("div", { className: "text-center text-gray-400 mt-20 flex flex-col items-center fade-in" }, 
+                            React.createElement("div", {className: "bg-gray-100 p-5 rounded-full mb-4"}, 
+                                React.createElement("i", { className: "fas fa-receipt text-4xl" })
+                            ),
+                            "কোন উত্তোলনের রেকর্ড পাওয়া যায়নি"
+                        ) :
+                        history.map((item, index) => React.createElement("div", { 
+                            key: item.id, 
+                            className: `bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center history-item fade-in`,
+                            style: { animationDelay: `${index * 0.1}s` }
+                        },
+                            React.createElement("div", null,
+                                React.createElement("h3", { className: "font-bold text-gray-800 uppercase flex items-center gap-2" }, 
+                                    React.createElement("span", {className: `w-2 h-2 rounded-full ${item.method.toLowerCase() === 'bkash' ? 'bg-pink-500' : 'bg-orange-500'}`}),
+                                    item.method
+                                ),
+                                React.createElement("p", { className: "text-[11px] text-gray-400 mt-1" }, item.date),
+                                React.createElement("p", { className: "text-sm text-gray-600 font-medium" }, item.contact)
+                            ),
+                            React.createElement("div", { className: "text-right" },
+                                React.createElement("p", { className: "font-bold text-indigo-600" }, item.amount + " Pts"),
+                                React.createElement("span", { className: `status-badge ${getStatusStyle(item.status)}` }, 
+                                    getStatusText(item.status)
+                                )
+                            )
+                        ))
+                )
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(WithdrawApp));
+    </script>
+<script
+  type="text/javascript"
+  src="https://pl28251646.effectivegatecpm.com/35/a9/f5/35a9f5fd8ad42fe9d141218e1a8cd6f0.js"
+></script>
+</body>
+</html>
