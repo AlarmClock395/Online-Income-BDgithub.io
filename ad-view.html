@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="bn">
+<link rel="shortcut icon" href="Ad-View.png" type="image/a-icon">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কাজ চলছে - ১৫</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary-color: #1a5276;
+            --secondary-color: #2980b9;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        /* Modern Header with gradient */
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .time-box {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+        }
+
+        .time-box span {
+            font-size: 18px;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+
+        .time-number {
+            background-color: white;
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 10px;
+            min-width: 45px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .time-number.warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .time-number.danger {
+            background-color: var(--danger-color);
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Modern Container with CSS Grid */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Main content with modern styling */
+        .main-content {
+            background-color: white;
+            min-height: 500px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .main-content:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .content-message {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .content-message h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .content-message p {
+            color: var(--dark-color);
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+        .progress-container {
+            width: 80%;
+            height: 10px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s linear;
+        }
+        
+        /* Modern Ad Column */
+        .ad-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ad-block {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .ad-block:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        .ad-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 10;
+        }
+
+        .ad-block iframe {
+            width: 100%;
+            border: none;
+        }
+
+        /* Modern Floating Ads */
+        .floating-ad-common {
+            position: fixed;
+            z-index: 1000;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: none;
+            max-width: 90vw;
+            max-height: 90vh;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Individual floating ad positions */
+        #floating-ad-container-1 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        #floating-ad-container-2 {
+            top: 30%;
+            left: 30%;
+            transform: translate(-50%, -50%);
+        }
+        
+        #floating-ad-container-3 {
+            top: 30%;
+            left: 70%;
+            transform: translate(-50%, -50%);
+        }
+        
+        #floating-ad-container-4 {
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: var(--transition);
+        }
+
+        .close-button:hover {
+            background-color: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .ad-column {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .time-box span {
+                font-size: 16px;
+            }
+            
+            .time-number {
+                font-size: 20px;
+            }
+            
+            .container {
+                padding: 0 15px;
+                gap: 15px;
+            }
+            
+            .main-content {
+                min-height: 300px;
+                padding: 15px;
+            }
+
+            /* All floating ads centered on mobile */
+            #floating-ad-container-1, 
+            #floating-ad-container-2, 
+            #floating-ad-container-3, 
+            #floating-ad-container-4 {
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+            }
+            
+            .close-button {
+                top: 5px;
+                right: 5px;
+            }
+        }
+
+        /* Loading animation */
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--success-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="time-box">
+            <span>সময় বাকি: </span>
+            <div class="time-number">১৫</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="content-message">
+                <h2>অপেক্ষা করুন</h2>
+                <p>আপনার অনুরোধ প্রক্রিয়াকরণ হচ্ছে। এটি কয়েক সেকেন্ড সময় নিতে পারে।</p>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="loader"></div>
+            
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'fe5f5583c29829edf3281dd87a309b19',
+                    'format' : 'iframe',
+                    'height' : 300,
+                    'width' : 160,
+                    'params' : {}
+                };
+            </script>
+            <script
+                type="text/javascript"
+                src="https://www.highperformanceformat.com/fe5f5583c29829edf3281dd87a309b19/invoke.js"
+            ></script>
+        </div>
+
+        <div class="ad-column">
+            <div class="ad-block">
+                <div class="ad-label">বিজ্ঞাপন</div>
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'b1dfaab177ee3f3f0809c190fa2225de',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script
+                    type="text/javascript"
+                    src="https://www.highperformanceformat.com/b1dfaab177ee3f3f0809c190fa2225de/invoke.js"
+                ></script>
+            </div>
+
+            <div class="ad-block">
+                <div class="ad-label">বিজ্ঞাপন</div>
+                <iframe 
+                    class="ad-iframe"
+                    src="https://www.effectivegatecpm.com/urjwcp5ps3?key=7f68d2648d7721a2d0ee3d3b91a20413" 
+                    frameborder="0" 
+                    scrolling="no"
+                ></iframe>
+            </div>
+
+            <div class="ad-block">
+                <div class="ad-label">বিজ্ঞাপন</div>
+                <iframe 
+                    class="ad-iframe"
+                    src="https://www.effectivegatecpm.com/xnvcu502s2?key=5b8f6cab0f841b7059ba0df1abed3894" 
+                    frameborder="0" 
+                    scrolling="no"
+                ></iframe>
+            </div>
+
+            <div class="ad-block">
+                <div class="ad-label">বিজ্ঞাপন</div>
+                <iframe 
+                    class="ad-iframe"
+                    src="https://www.effectivegatecpm.com/kmic9j26c?key=fcc906f66f999fea22e86527c4639d9d" 
+                    frameborder="0" 
+                    scrolling="no"
+                ></iframe>
+            </div>
+
+            <div class="ad-block">
+                <div class="ad-label">বিজ্ঞাপন</div>
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '49e15a1607a0f5a41ecb271ede18dab3',
+                        'format' : 'iframe',
+                        'height' : 600,
+                        'width' : 160,
+                        'params' : {}
+                    };
+                </script>
+                <script
+                    type="text/javascript"
+                    src="https://www.highperformanceformat.com/49e15a1607a0f5a41ecb271ede18dab3/invoke.js"
+                ></script>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Ads -->
+    <div id="floating-ad-container-1" class="floating-ad-common">
+        <button class="close-button" onclick="closeAd('floating-ad-container-1')">
+            <i class="fas fa-times"></i>
+        </button>
+        <script async="async" data-cfasync="false" src="https://pl28251665.effectivegatecpm.com/11012c5d1a3d7a529ac7f2022e3fdd3f/invoke.js"></script>
+        <div id="container-11012c5d1a3d7a529ac7f2022e3fdd3f"></div>
+    </div>
+    
+    <div id="floating-ad-container-2" class="floating-ad-common">
+        <button class="close-button" onclick="closeAd('floating-ad-container-2')">
+            <i class="fas fa-times"></i>
+        </button>
+        <script async="async" data-cfasync="false" src="https://pl28251665.effectivegatecpm.com/11012c5d1a3d7a529ac7f2022e3fdd3f/invoke.js"></script>
+        <div id="container-11012c5d1a3d7a529ac7f2022e3fdd3f"></div>
+    </div>
+
+    <div id="floating-ad-container-3" class="floating-ad-common">
+        <button class="close-button" onclick="closeAd('floating-ad-container-3')">
+            <i class="fas fa-times"></i>
+        </button>
+        <script async="async" data-cfasync="false" src="https://pl28251665.effectivegatecpm.com/11012c5d1a3d7a529ac7f2022e3fdd3f/invoke.js"></script>
+        <div id="container-11012c5d1a3d7a529ac7f2022e3fdd3f"></div>
+    </div>
+
+    <div id="floating-ad-container-4" class="floating-ad-common">
+        <button class="close-button" onclick="closeAd('floating-ad-container-4')">
+            <i class="fas fa-times"></i>
+        </button>
+        <script async="async" data-cfasync="false" src="https://pl28251665.effectivegatecpm.com/11012c5d1a3d7a529ac7f2022e3fdd3f/invoke.js"></script>
+        <div id="container-11012c5d1a3d7a529ac7f2022e3fdd3f"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">বিজ্ঞাপন বন্ধ করা হয়েছে</div>
+
+    <!-- External Scripts -->
+    <script type="text/javascript" src="https://pl28251646.effectivegatecpm.com/35/a9/f5/35a9f5fd8ad42fe9d141218e1a8cd6f0.js"></script>
+    <script type="text/javascript" src="https://pl28251657.effectivegatecpm.com/76/06/7b/76067bc070f39bec7045ca44f2bfc3bf.js"></script>
+
+    <script>
+        // Modern JavaScript with ES6+ features
+        document.addEventListener('DOMContentLoaded', () => {
+            // Timer and redirect logic
+            const TIMER_DURATION = 15;
+            let timeLeft = TIMER_DURATION;
+            const timeDisplay = document.querySelector('.time-number');
+            const progressBar = document.getElementById('progress-bar');
+            const contentMessage = document.querySelector('.content-message h2');
+            const loader = document.querySelector('.loader');
+            
+            // Update progress bar
+            const updateProgressBar = () => {
+                const progress = ((TIMER_DURATION - timeLeft) / TIMER_DURATION) * 100;
+                progressBar.style.width = `${progress}%`;
+            };
+            
+            // Show toast notification
+            const showToast = (message) => {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            };
+            
+            // Close floating ad with animation
+            window.closeAd = (adId) => {
+                const adElement = document.getElementById(adId);
+                if (adElement) {
+                    adElement.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => {
+                        adElement.style.display = 'none';
+                        showToast('বিজ্ঞাপন বন্ধ করা হয়েছে');
+                    }, 300);
+                }
+            };
+            
+            // Add fade out animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: scale(1); }
+                    to { opacity: 0; transform: scale(0.8); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Countdown timer
+            const countdown = setInterval(() => {
+                timeLeft--;
+                timeDisplay.textContent = timeLeft;
+                
+                // Update progress bar
+                updateProgressBar();
+                
+                // Change color based on time left
+                if (timeLeft <= 5) {
+                    timeDisplay.classList.add('danger');
+                } else if (timeLeft <= 10) {
+                    timeDisplay.classList.add('warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    timeDisplay.textContent = '✅';
+                    timeDisplay.classList.remove('warning', 'danger');
+                    
+                    contentMessage.textContent = 'সম্পন্ন!';
+                    loader.style.display = 'none';
+                    
+                    const returnURL = 'index.html?task_completed=true';
+                    
+                    setTimeout(() => {
+                        window.location.href = returnURL;
+                    }, 3000);
+                }
+            }, 1000);
+            
+            // Show floating ads at different intervals
+            const floatingAds = [
+                { id: 'floating-ad-container-1', delay: 1000 },
+                { id: 'floating-ad-container-2', delay: 3000 },
+                { id: 'floating-ad-container-3', delay: 5000 },
+                { id: 'floating-ad-container-4', delay: 7000 }
+            ];
+            
+            floatingAds.forEach(ad => {
+                setTimeout(() => {
+                    const adElement = document.getElementById(ad.id);
+                    if (adElement) {
+                        adElement.style.display = 'block';
+                    }
+                }, ad.delay);
+            });
+        });
+    </script>
+<script
+  type="text/javascript"
+  src="https://pl28251646.effectivegatecpm.com/35/a9/f5/35a9f5fd8ad42fe9d141218e1a8cd6f0.js"
+></script>
+</body>
+</html>
